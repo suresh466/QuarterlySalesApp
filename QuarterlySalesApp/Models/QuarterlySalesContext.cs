@@ -22,13 +22,55 @@ namespace QuarterlySales.Models
                 new Employee
                 {
                     EmployeeId = 1,
-                    FirstName = "Ada",
-                    LastName = "Lovelace",
+                    FirstName = "Ramu",
+                    LastName = "Singh",
                     DOB = new DateTime(1956, 12, 10),
                     DateOfHire = new DateTime(1995, 1, 1),
-                    ManagerId = null // has no manager
-                }
-            );
+                    ManagerId = null
+                },
+                new Employee
+                {
+                    EmployeeId = 2,
+                    FirstName = "Shyam",
+                    LastName = "Singh",
+                    DOB = new DateTime(1970, 1, 1),
+                    DateOfHire = new DateTime(1995, 1, 1),
+                    ManagerId = 1 // Ram Singh is Shyam Singh's manager
+                });
+            // seed data for initial sales
+            modelBuilder.Entity<Sales>().HasData(
+                new Sales
+                {
+                    SalesId = 1,
+                    Quarter = 1,
+                    Year = 2020,
+                    Amount = 1000,
+                    EmployeeId = 1
+                },
+                new Sales
+                {
+                    SalesId = 2,
+                    Quarter = 2,
+                    Year = 2020,
+                    Amount = 2000,
+                    EmployeeId = 1
+                },
+                new Sales
+                {
+                    SalesId = 3,
+                    Quarter = 3,
+                    Year = 2020,
+                    Amount = 3000,
+                    EmployeeId = 2,
+                },
+                new Sales
+                {
+                    SalesId = 4,
+                    Quarter = 4,
+                    Year = 2020,
+                    Amount = 4000,
+                    EmployeeId = 2
+                });
 
             // Configure relationships
             modelBuilder.Entity<Employee>()
