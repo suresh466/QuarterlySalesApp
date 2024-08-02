@@ -29,6 +29,11 @@ namespace QuarterlySalesApp
             // inject database context using dependency injection
             services.AddDbContext<QuarterlySalesContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            // enable client-side validation
+            services.AddControllersWithViews().AddViewOptions(options =>
+            {
+                options.HtmlHelperOptions.ClientValidationEnabled = true;
+            });
 
         }
 
