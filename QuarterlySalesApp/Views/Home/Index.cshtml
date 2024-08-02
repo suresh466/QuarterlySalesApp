@@ -1,37 +1,48 @@
-﻿@model IEnumerable<QuarterlySalesApp.Models.Employee>
+﻿@model IEnumerable<QuarterlySalesApp.Models.Sales>
 
 @{
-    ViewData["Title"] = "Employees";
+    ViewData["Title"] = "Quarterly Sales";
 }
 
-<h1>Employees</h1>
+<h1>Quarterly Sales</h1>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="form-group">
+        <label for="employeeId">Employee:</label>
+        <select name="employeeId" asp-items="ViewBag.Employees" class="form-control">
+            <option value="">All Employees</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
 
-<p>
-    <a asp-action="AddEmployee">Add New Employee</a>
-</p>
 <table class="table">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Date of Birth</th>
-            <th>Date of Hire</th>
-            <th>Manager</th>
+            <th>Year</th>
+            <th>Quarter</th>
+            <th>Employee</th>
+            <th>Amount</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.FirstName @item.LastName</td>
-                <td>@item.DOB.ToShortDateString()</td>
-                <td>@item.DateOfHire.ToShortDateString()</td>
-                <td>@(item.Manager != null ? $"{item.Manager.FirstName} {item.Manager.LastName}" : "N/A")</td>
+                <td>@item.Year</td>
+                <td>@item.Quarter</td>
+                <td>@item.Employee.FullName</td>
+                <td>@item.Amount.ToString("C")</td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <p>No sales data available.</p>
+}
+else
+{
+    <p>Total Sales: @Model.Sum(s => s.Amount).ToString("C")</p>
+}

@@ -22,10 +22,24 @@ namespace QuarterlySalesApp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? employeeId)
         {
-            var employees = await _context.Employees.Include(e => e.Manager).ToListAsync();
-            return View(employees);
+            IQueryable<Sales> sales = _context.Sales.Include(s => s.Employee);
+
+            if (employeeId.HasValue)
+            {
+                sales = sales.Where(s => s.EmployeeId == employeeId.Value);
+            }
+
+            var salesData = await sales
+                .OrderByDescending(s => s.Year)
+                .ThenByDescending(s => s.Quarter)
+                .ToListAsync();
+
+            ViewBag.Employees = new SelectList(await _context.Employees.OrderBy(e => e.LastName).ToListAsync(), "EmployeeId", "FullName");
+            ViewBag.SelectedEmployee = employeeId;
+
+            return View(salesData);
         }
 
         [HttpGet]
