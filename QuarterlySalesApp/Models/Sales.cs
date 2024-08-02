@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuarterlySalesApp.Models
 {
@@ -17,7 +18,8 @@ namespace QuarterlySalesApp.Models
         public int Year { get; set; }
 
         [Required(ErrorMessage = "Amount is required.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than 0.")]
+        [Range(0.01, 9999999.99, ErrorMessage = "Amount must be greater than 0 and less than 10 million.")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         [Required(ErrorMessage = "Employee is required.")]
