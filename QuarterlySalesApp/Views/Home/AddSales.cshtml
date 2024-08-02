@@ -1,0 +1,44 @@
+﻿@model QuarterlySalesApp.Models.Sales
+
+@{
+    ViewData["Title"] = "Add Sales Data";
+}
+
+<h1>Add Sales Data</h1>
+
+<form asp-action="AddSales">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Year" class="control-label"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Quarter" class="control-label"></label>
+        <input asp-for="Quarter" class="form-control" />
+        <span asp-validation-for="Quarter" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EmployeeId" class="control-label">Employee</label>
+        <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees"></select>
+        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Sales">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
