@@ -60,6 +60,11 @@ namespace QuarterlySalesApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "salesGrid",
+                    pattern: "Sales/{pageNumber:int?}/{pageSize:int?}/{sortBy?}/{sortDirection?}",
+                    defaults: new { controller = "Home", action = "Index" });
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });

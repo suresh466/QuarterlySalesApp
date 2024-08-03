@@ -25,27 +25,63 @@ namespace QuarterlySalesApp.Controllers
         }
 
         // display the list of sales records
-        public async Task<IActionResult> Index(int? employeeId)
+        public async Task<IActionResult> Index(int? employeeId, int? year, int? quarter, string sortBy, string sortDirection, int pageNumber = 1, int pageSize = 10)
         {
             IQueryable<Sales> sales = _context.Sales.Include(s => s.Employee);
 
-            // Filter by employee if employeeId is provided
+            // Apply filters
             if (employeeId.HasValue)
             {
                 sales = sales.Where(s => s.EmployeeId == employeeId.Value);
             }
+            if (year.HasValue)
+            {
+                sales = sales.Where(s => s.Year == year.Value);
+            }
+            if (quarter.HasValue)
+            {
+                sales = sales.Where(s => s.Quarter == quarter.Value);
+            }
 
-            // Order by Year and Quarter in descending order
-            var salesData = await sales
-                .OrderByDescending(s => s.Year)
-                .ThenByDescending(s => s.Quarter)
-                .ToListAsync();
+            // Apply sorting
+            switch (sortBy)
+            {
+                case "employee":
+                    sales = sortDirection == "asc" ? sales.OrderBy(s => s.Employee.LastName) : sales.OrderByDescending(s => s.Employee.LastName);
+                    break;
+                case "year":
+                    sales = sortDirection == "asc" ? sales.OrderBy(s => s.Year) : sales.OrderByDescending(s => s.Year);
+                    break;
+                case "quarter":
+                    sales = sortDirection == "asc" ? sales.OrderBy(s => s.Quarter) : sales.OrderByDescending(s => s.Quarter);
+                    break;
+                case "amount":
+                    sales = sortDirection == "asc" ? sales.OrderBy(s => s.Amount) : sales.OrderByDescending(s => s.Amount);
+                    break;
+                default:
+                    sales = sales.OrderByDescending(s => s.Year).ThenByDescending(s => s.Quarter);
+                    break;
+            }
 
-            // Create a SelectList for the employees dropdown list
+            // Apply paging
+            var totalItems = await sales.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var salesData = await sales.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            // Prepare ViewBag data for dropdowns and current state
             ViewBag.Employees = new SelectList(await _context.Employees.OrderBy(e => e.LastName).ToListAsync(), "EmployeeId", "FullName", employeeId);
-            ViewBag.SelectedEmployee = employeeId;
+            ViewBag.Years = new SelectList(await _context.Sales.Select(s => s.Year).Distinct().OrderByDescending(y => y).ToListAsync(), year);
+            ViewBag.Quarters = new SelectList(new[] { 1, 2, 3, 4 }, quarter);
 
-            // Pass the list of sales data to the view
+            ViewBag.CurrentSort = sortBy;
+            ViewBag.SortDirection = sortDirection;
+            ViewBag.EmployeeId = employeeId;
+            ViewBag.Year = year;
+            ViewBag.Quarter = quarter;
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+
             return View(salesData);
         }
 
