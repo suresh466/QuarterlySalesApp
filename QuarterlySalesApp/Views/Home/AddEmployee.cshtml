@@ -1,4 +1,5 @@
-﻿@model QuarterlySalesApp.Models.Employee
+﻿@* model directive is used to bind the view to the Employee model *@
+@model QuarterlySalesApp.Models.Employee
 @{
     ViewData["Title"] = "Add Employee";
 }
@@ -6,10 +7,12 @@
 <div class="container mt-4">
     <h1 class="mb-4">Add Employee</h1>
 
+    @* if the model state is not valid, display the error messages *@
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
             <ul>
+                @* loop through the model state errors and display them *@
                 @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct())
                 {
                     <li class="list-unstyled">@error</li>
@@ -18,11 +21,13 @@
         </div>
     }
 
+    @* form to add a new employee *@
     <form asp-action="AddEmployee">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="FirstName">First Name</label>
                 <input asp-for="FirstName" class="form-control" />
+                @* display the validation error message inline for the FirstName property *@
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group col-md-6">
@@ -43,6 +48,7 @@
                 <span asp-validation-for="DateOfHire" class="text-danger"></span>
             </div>
         </div>
+        @* dropdown list to select the manager *@
         <div class="form-group">
             <label asp-for="ManagerId">Manager</label>
             <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
@@ -50,6 +56,7 @@
             </select>
             <span asp-validation-for="ManagerId" class="text-danger"></span>
         </div>
+        @* buttons to submit the form and go back to the list *@
         <button type="submit" class="btn btn-primary">Add Employee</button>
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </form>

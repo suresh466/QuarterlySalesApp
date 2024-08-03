@@ -1,4 +1,5 @@
-﻿@model IEnumerable<QuarterlySalesApp.Models.Sales>
+﻿@* model for the view is a list of Sales objects *@
+@model IEnumerable<QuarterlySalesApp.Models.Sales>
 @{
     ViewData["Title"] = "Quarterly Sales";
 }
@@ -6,6 +7,7 @@
 <div class="container mt-4">
     <h1 class="mb-4">Quarterly Sales</h1>
 
+    @* form to filter the sales data by employee *@
     <form asp-action="Index" method="get" class="form-inline mb-4">
         <div class="form-group mr-2">
             <label for="employeeId" class="mr-2">Employee:</label>
@@ -16,6 +18,7 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </form>
 
+    @* table to display the sales data *@
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead-dark">
@@ -27,6 +30,7 @@
                 </tr>
             </thead>
             <tbody>
+                @* loop through the sales data and display each row *@
                 @foreach (var item in Model)
                 {
                     <tr>
@@ -39,8 +43,9 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="text-right"><strong>Total Sales:</strong></td>
-                    <td class="text-right"><strong>@Model.Sum(s => s.Amount).ToString("C")</strong></td>
+                    @* display the total sales amount *@
+                    <td class="text-left"><strong>Total Sales:</strong></td>
+                    <td colspan="3" class="text-right"><strong>@Model.Sum(s => s.Amount).ToString("C")</strong></td>
                 </tr>
             </tfoot>
         </table>

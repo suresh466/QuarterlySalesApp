@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuarterlySalesApp.Models
 {
+    // Custom validation attribute to ensure a date is not before a specified date
     public class DateNotBeforeAttribute : ValidationAttribute
     {
         private readonly DateTime _date;
@@ -12,6 +13,7 @@ namespace QuarterlySalesApp.Models
             _date = DateTime.Parse(dateString);
         }
 
+        // Validate the date by comparing it to the specified date
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             DateTime date = (DateTime)value;
@@ -19,6 +21,7 @@ namespace QuarterlySalesApp.Models
             {
                 return new ValidationResult(ErrorMessage ?? $"Date must not be before {_date.ToShortDateString()}.");
             }
+            // Return success if the date is valid
             return ValidationResult.Success;
         }
     }

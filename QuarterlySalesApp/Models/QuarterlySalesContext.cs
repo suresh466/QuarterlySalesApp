@@ -4,15 +4,18 @@ using System;
 
 namespace QuarterlySales.Models
 {
+    // Database context class for the Quarterly Sales application
     public class QuarterlySalesContext : DbContext
     {
         public QuarterlySalesContext(DbContextOptions<QuarterlySalesContext> options)
             : base(options)
         { }
 
+        // DbSet properties for database tables so they can be queried and saved
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Sales> Sales { get; set; }
 
+        // Override the OnModelCreating method to configure the database model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
