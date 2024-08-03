@@ -1,5 +1,4 @@
-﻿using QuarterlySales.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,12 +17,12 @@ namespace QuarterlySalesApp.Models
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Date of birth is required.")]
-        [PastDate(ErrorMessage = "Date of birth must be in the past.")]
+        [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
         public DateTime DOB { get; set; }
 
         [Required(ErrorMessage = "Date of hire is required.")]
-        [PastDate(ErrorMessage = "Date of hire must be in the past.")]
+        [DataType(DataType.Date)]
         [Display(Name = "Date of Hire")]
         [DateNotBefore("1/1/1995", ErrorMessage = "Date of hire cannot be before company founding (1/1/1995).")]
         public DateTime DateOfHire { get; set; }

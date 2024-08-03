@@ -1,22 +1,22 @@
 ﻿@model QuarterlySalesApp.Models.Employee
-
 @{
     ViewData["Title"] = "Add Employee";
 }
-
 <h1>Add Employee</h1>
+
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="text-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct())
+            {
+                <li>@error</li>
+            }
+        </ul>
     </div>
 }
 
 <form asp-action="AddEmployee">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="FirstName" class="control-label"></label>
         <input asp-for="FirstName" class="form-control" />

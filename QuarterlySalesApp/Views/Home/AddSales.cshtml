@@ -1,13 +1,22 @@
 ﻿@model QuarterlySalesApp.Models.Sales
-
 @{
     ViewData["Title"] = "Add Sales Data";
 }
-
 <h1>Add Sales Data</h1>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct())
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
 <form asp-action="AddSales">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Quarter" class="control-label"></label>
         <input asp-for="Quarter" class="form-control" />
@@ -31,9 +40,10 @@
         <span asp-validation-for="EmployeeId" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Add" class="btn btn-primary" />
     </div>
 </form>
+
 <div>
     <a asp-action="Sales">Back to List</a>
 </div>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QuarterlySales.Models;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace QuarterlySalesApp.Controllers
 {
@@ -52,48 +53,47 @@ namespace QuarterlySalesApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEmployee(Employee employee)
         {
-            if (ModelState.IsValid)
+            ModelState.Clear();
+
+            // Capitalize names before saving
+            employee.FirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(employee.FirstName.ToLower());
+            employee.LastName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(employee.LastName.ToLower());
+
+            // Custom validations
+            var existingEmployee = await _context.Employees.FirstOrDefaultAsync(e =>
+                e.FirstName.ToLower() == employee.FirstName.ToLower() &&
+                e.LastName.ToLower() == employee.LastName.ToLower() &&
+                e.DOB == employee.DOB);
+
+            if (existingEmployee != null)
             {
-                bool hasErrors = false;
+                ModelState.AddModelError("", $"{employee.FirstName} {employee.LastName} (DOB: {employee.DOB:d}) is already in the database.");
+            }
 
-                // Check for existing employee
-                var existingEmployee = await _context.Employees
-                    .FirstOrDefaultAsync(e =>
-                        e.FirstName == employee.FirstName &&
-                        e.LastName == employee.LastName &&
-                        e.DOB == employee.DOB);
-
-                if (existingEmployee != null)
+            if (employee.ManagerId.HasValue && employee.ManagerId.Value != 0)
+            {
+                var manager = await _context.Employees.FindAsync(employee.ManagerId.Value);
+                if (manager != null &&
+                    manager.FirstName.ToLower() == employee.FirstName.ToLower() &&
+                    manager.LastName.ToLower() == employee.LastName.ToLower() &&
+                    manager.DOB == employee.DOB)
                 {
-                    ModelState.AddModelError("", $"{employee.FirstName} {employee.LastName} (DOB: {employee.DOB:d}) is already in the database.");
-                    hasErrors = true;
-                }
-
-                // Check if employee is their own manager
-                if (employee.EmployeeId == employee.ManagerId)
-                {
-                    ModelState.AddModelError("", $"Manager and employee can't be the same person.");
-                    hasErrors = true;
-                }
-
-                // Check hire date
-                if (employee.DateOfHire < new DateTime(1995, 1, 1))
-                {
-                    ModelState.AddModelError("", "Date of hire cannot be before company founding (1/1/1995).");
-                    hasErrors = true;
-                }
-
-                if (!hasErrors)
-                {
-                    _context.Add(employee);
-                    await _context.SaveChangesAsync();
-                    TempData["Message"] = "Employee added successfully!";
-                    return RedirectToAction("Index");
+                    ModelState.AddModelError("", "An employee cannot be their own manager.");
                 }
             }
-            ViewBag.Managers = new SelectList(_context.Employees, "EmployeeId", "FullName", employee.ManagerId);
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(employee);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Employee added successfully!";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Managers = new SelectList(await _context.Employees.ToListAsync(), "EmployeeId", "FullName", employee.ManagerId);
             return View(employee);
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -122,25 +122,44 @@ namespace QuarterlySalesApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSales(Sales sale)
         {
+            ModelState.Clear();
+
+            // Custom validations
+            var existingSale = await _context.Sales.FirstOrDefaultAsync(s =>
+                s.EmployeeId == sale.EmployeeId &&
+                s.Year == sale.Year &&
+                s.Quarter == sale.Quarter);
+
+            if (existingSale != null)
+            {
+                var employee = await _context.Employees.FindAsync(sale.EmployeeId);
+                ModelState.AddModelError("", $"Sales for {employee.FirstName} {employee.LastName} for {sale.Year} Q{sale.Quarter} are already in the database.");
+            }
+
+            if (sale.Year <= 2000)
+            {
+                ModelState.AddModelError("", "Year must be after 2000.");
+            }
+
+            if (sale.Quarter < 1 || sale.Quarter > 4)
+            {
+                ModelState.AddModelError("", "Quarter must be between 1 and 4.");
+            }
+
+            if (sale.Amount <= 0)
+            {
+                ModelState.AddModelError("", "Amount must be greater than 0.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Additional server-side validation
-                var existingSale = await _context.Sales
-                    .FirstOrDefaultAsync(s => s.EmployeeId == sale.EmployeeId && s.Year == sale.Year && s.Quarter == sale.Quarter);
-
-                if (existingSale != null)
-                {
-                    ModelState.AddModelError("", "Sales data already exists for this employee, year, and quarter.");
-                }
-                else
-                {
-                    _context.Add(sale);
-                    await _context.SaveChangesAsync();
-                    TempData["Message"] = "Sales data added successfully!";
-                    return RedirectToAction("Sales");
-                }
+                _context.Add(sale);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Sales data added successfully!";
+                return RedirectToAction("Sales");
             }
-            ViewBag.Employees = new SelectList(_context.Employees, "EmployeeId", "FullName", sale.EmployeeId);
+
+            ViewBag.Employees = new SelectList(await _context.Employees.ToListAsync(), "EmployeeId", "FullName", sale.EmployeeId);
             return View(sale);
         }
     }

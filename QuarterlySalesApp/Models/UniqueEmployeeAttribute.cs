@@ -10,7 +10,6 @@ namespace QuarterlySales.Models
         {
             var employee = (Employee)validationContext.ObjectInstance;
             var context = (QuarterlySalesContext)validationContext.GetService(typeof(QuarterlySalesContext));
-
             var existingEmployee = context.Employees.FirstOrDefault(e =>
                 e.FirstName == employee.FirstName &&
                 e.LastName == employee.LastName &&
@@ -21,7 +20,6 @@ namespace QuarterlySales.Models
             {
                 return new ValidationResult($"{employee.FirstName} {employee.LastName} (DOB: {employee.DOB:d}) is already in the database.");
             }
-
             return ValidationResult.Success;
         }
     }

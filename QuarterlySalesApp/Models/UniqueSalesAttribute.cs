@@ -10,7 +10,6 @@ namespace QuarterlySalesApp.Models
         {
             var sale = (Sales)validationContext.ObjectInstance;
             var context = (QuarterlySalesContext)validationContext.GetService(typeof(QuarterlySalesContext));
-
             var existingSale = context.Sales.FirstOrDefault(s =>
                 s.EmployeeId == sale.EmployeeId &&
                 s.Year == sale.Year &&
@@ -19,9 +18,9 @@ namespace QuarterlySalesApp.Models
 
             if (existingSale != null)
             {
-                return new ValidationResult(ErrorMessage ?? "Sales data already exists for this employee, year, and quarter.");
+                var employee = context.Employees.Find(sale.EmployeeId);
+                return new ValidationResult($"Sales for {employee.FirstName} {employee.LastName} for {sale.Year} Q{sale.Quarter} are already in the database.");
             }
-
             return ValidationResult.Success;
         }
     }
