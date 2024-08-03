@@ -25,7 +25,7 @@ namespace QuarterlySalesApp.Controllers
         }
 
         // display the list of sales records
-        public async Task<IActionResult> Index(int? employeeId, int? year, int? quarter, string sortBy, string sortDirection, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int? employeeId, int? year, int? quarter, string sortBy, string sortDirection, int pageNumber = 1, int pageSize = 4)
         {
             IQueryable<Sales> sales = _context.Sales.Include(s => s.Employee);
 

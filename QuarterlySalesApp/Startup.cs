@@ -59,6 +59,7 @@ namespace QuarterlySalesApp
 
             app.UseEndpoints(endpoints =>
             {
+                // Map the default route for the sales grid
                 endpoints.MapControllerRoute(
                     name: "salesGrid",
                     pattern: "Sales/{pageNumber:int?}/{pageSize:int?}/{sortBy?}/{sortDirection?}",

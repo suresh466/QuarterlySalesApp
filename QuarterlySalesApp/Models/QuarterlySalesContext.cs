@@ -73,6 +73,22 @@ namespace QuarterlySales.Models
                     Year = 2020,
                     Amount = 4000,
                     EmployeeId = 2
+                },
+                new Sales
+                {
+                    SalesId = 5,
+                    Quarter = 2,
+                    Year = 2021,
+                    Amount = 40000,
+                    EmployeeId = 2,
+                },
+                new Sales
+                {
+                    SalesId = 6,
+                    Quarter = 3,
+                    Year = 2021,
+                    Amount = 50000,
+                    EmployeeId = 1,
                 });
 
             // Configure relationships
