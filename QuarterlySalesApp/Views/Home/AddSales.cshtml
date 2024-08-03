@@ -2,50 +2,52 @@
 @{
     ViewData["Title"] = "Add Sales Data";
 }
-<h1>Add Sales Data</h1>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct())
-            {
-                <li>@error</li>
-            }
-        </ul>
-    </div>
-}
+<div class="container mt-4">
+    <h1 class="mb-4">Add Sales Data</h1>
 
-<form asp-action="AddSales">
-    <div class="form-group">
-        <label asp-for="Quarter" class="control-label"></label>
-        <input asp-for="Quarter" class="form-control" />
-        <span asp-validation-for="Quarter" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Year" class="control-label"></label>
-        <input asp-for="Year" class="form-control" />
-        <span asp-validation-for="Year" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Amount" class="control-label"></label>
-        <input asp-for="Amount" class="form-control" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EmployeeId" class="control-label">Employee</label>
-        <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees">
-            <option value="">-- Select Employee --</option>
-        </select>
-        <span asp-validation-for="EmployeeId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Add" class="btn btn-primary" />
-    </div>
-</form>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).Distinct())
+                {
+                    <li class="list-unstyled">@error</li>
+                }
+            </ul>
+        </div>
+    }
 
-<div>
-    <a asp-action="Sales">Back to List</a>
+    <form asp-action="AddSales">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Quarter">Quarter</label>
+                <input asp-for="Quarter" class="form-control" />
+                <span asp-validation-for="Quarter" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Year">Year</label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Amount">Amount</label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="EmployeeId">Employee</label>
+                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees">
+                    <option value="">-- Select Employee --</option>
+                </select>
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Sales Data</button>
+        <a asp-action="Sales" class="btn btn-secondary">Back to List</a>
+    </form>
 </div>
 
 @section Scripts {
