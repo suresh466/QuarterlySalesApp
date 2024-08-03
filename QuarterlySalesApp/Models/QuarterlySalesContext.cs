@@ -24,7 +24,7 @@ namespace QuarterlySales.Models
                     EmployeeId = 1,
                     FirstName = "Ramu",
                     LastName = "Singh",
-                    DOB = new DateTime(1956, 12, 10),
+                    DOB = new DateTime(1960, 1, 1),
                     DateOfHire = new DateTime(1995, 1, 1),
                     ManagerId = null
                 },
