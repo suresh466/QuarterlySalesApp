@@ -19,7 +19,7 @@ namespace QuarterlySales.Models
 
             if (existingEmployee != null)
             {
-                return new ValidationResult(ErrorMessage ?? "An employee with the same name and date of birth already exists.");
+                return new ValidationResult($"{employee.FirstName} {employee.LastName} (DOB: {employee.DOB:d}) is already in the database.");
             }
 
             return ValidationResult.Success;

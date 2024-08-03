@@ -6,10 +6,10 @@
 
 <h1>Quarterly Sales</h1>
 
-<form asp-action="Index" method="get" class="mb-3">
-    <div class="form-group">
-        <label for="employeeId">Employee:</label>
-        <select name="employeeId" asp-items="ViewBag.Employees" class="form-control">
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="employeeId" class="mr-2">Employee:</label>
+        <select name="employeeId" asp-items="ViewBag.Employees" class="form-control mr-2">
             <option value="">All Employees</option>
         </select>
     </div>
@@ -22,7 +22,7 @@
             <th>Year</th>
             <th>Quarter</th>
             <th>Employee</th>
-            <th>Amount</th>
+            <th class="text-right">Amount</th>
         </tr>
     </thead>
     <tbody>
@@ -32,17 +32,19 @@
                 <td>@item.Year</td>
                 <td>@item.Quarter</td>
                 <td>@item.Employee.FullName</td>
-                <td>@item.Amount.ToString("C")</td>
+                <td class="text-right">@item.Amount.ToString("C")</td>
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <td class="text-left"><strong>Total Sales:</strong></td>
+            <td colspan="3" class="text-right"><strong>@Model.Sum(s => s.Amount).ToString("C")</strong></td>
+        </tr>
+    </tfoot>
 </table>
 
 @if (!Model.Any())
 {
     <p>No sales data available.</p>
-}
-else
-{
-    <p>Total Sales: @Model.Sum(s => s.Amount).ToString("C")</p>
 }

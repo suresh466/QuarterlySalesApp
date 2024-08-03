@@ -36,7 +36,7 @@ namespace QuarterlySalesApp.Controllers
                 .ThenByDescending(s => s.Quarter)
                 .ToListAsync();
 
-            ViewBag.Employees = new SelectList(await _context.Employees.OrderBy(e => e.LastName).ToListAsync(), "EmployeeId", "FullName");
+            ViewBag.Employees = new SelectList(await _context.Employees.OrderBy(e => e.LastName).ToListAsync(), "EmployeeId", "FullName", employeeId);
             ViewBag.SelectedEmployee = employeeId;
 
             return View(salesData);
@@ -54,12 +54,36 @@ namespace QuarterlySalesApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Additional server-side validation
+                bool hasErrors = false;
+
+                // Check for existing employee
+                var existingEmployee = await _context.Employees
+                    .FirstOrDefaultAsync(e =>
+                        e.FirstName == employee.FirstName &&
+                        e.LastName == employee.LastName &&
+                        e.DOB == employee.DOB);
+
+                if (existingEmployee != null)
+                {
+                    ModelState.AddModelError("", $"{employee.FirstName} {employee.LastName} (DOB: {employee.DOB:d}) is already in the database.");
+                    hasErrors = true;
+                }
+
+                // Check if employee is their own manager
+                if (employee.EmployeeId == employee.ManagerId)
+                {
+                    ModelState.AddModelError("", $"Manager and employee can't be the same person.");
+                    hasErrors = true;
+                }
+
+                // Check hire date
                 if (employee.DateOfHire < new DateTime(1995, 1, 1))
                 {
-                    ModelState.AddModelError("DateOfHire", "Date of hire cannot be before company founding (1/1/1995).");
+                    ModelState.AddModelError("", "Date of hire cannot be before company founding (1/1/1995).");
+                    hasErrors = true;
                 }
-                else
+
+                if (!hasErrors)
                 {
                     _context.Add(employee);
                     await _context.SaveChangesAsync();

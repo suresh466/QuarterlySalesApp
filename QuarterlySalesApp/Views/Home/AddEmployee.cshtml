@@ -5,6 +5,15 @@
 }
 
 <h1>Add Employee</h1>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
 <form asp-action="AddEmployee">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -29,16 +38,17 @@
         <span asp-validation-for="DateOfHire" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="ManagerId" class="control-label"></label>
+        <label asp-for="ManagerId" class="control-label">Manager</label>
         <select asp-for="ManagerId" class="form-control" asp-items="ViewBag.Managers">
             <option value="">-- Select Manager --</option>
         </select>
         <span asp-validation-for="ManagerId" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Add" class="btn btn-primary" />
     </div>
 </form>
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

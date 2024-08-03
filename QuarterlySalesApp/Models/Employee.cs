@@ -29,14 +29,12 @@ namespace QuarterlySalesApp.Models
         public DateTime DateOfHire { get; set; }
 
         [Display(Name = "Manager")]
-        [ManagerNotSelf(ErrorMessage = "An employee cannot be their own manager.")]
         public int? ManagerId { get; set; }
 
         public Employee Manager { get; set; }
         public List<Employee> ManagedEmployees { get; set; }
         public List<Sales> Sales { get; set; }
 
-        [UniqueEmployee]
         public string FullName => $"{FirstName} {LastName}";
     }
 }
