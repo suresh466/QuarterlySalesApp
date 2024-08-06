@@ -170,7 +170,7 @@ namespace QuarterlySalesApp.Controllers
                 _context.Add(sale);
                 await _context.SaveChangesAsync();
                 TempData["Message"] = "Sales data added successfully!";
-                return RedirectToAction("Sales");
+                return RedirectToAction("Index");
             }
 
             // Create a SelectList for the dropdown list
